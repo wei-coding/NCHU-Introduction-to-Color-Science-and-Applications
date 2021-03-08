@@ -4,7 +4,7 @@ def main():
     '''
     (n, k, m) = input().strip().split(' ')
     (n, k, m) = (int(n), int(k), int(m))
-    print(cobidic(n, k, m))
+    print(element(n, k, m))
 
 def cobidic(n, k ,m) -> list:
     '''
@@ -22,7 +22,7 @@ def cobidic(n, k ,m) -> list:
     ki = k
     cobidic_list = []
     while m >= 0 and ki > 0:
-        for i in range(1,n):
+        for i in range(1,n+1):
             c_now = C(n-i,ki)
             if c_now <= m:
                 cobidic_list.append(n-i)
@@ -31,6 +31,12 @@ def cobidic(n, k ,m) -> list:
         ki -= 1
         n -= 1
     return cobidic_list
+
+def element(n, k, m) -> list:
+    d = C(n, k) - 1 - m
+    cobidic_d = cobidic(n, k, d)
+    element_list = [ n-1-x for x in cobidic_d]
+    return element_list
 
 def C(n,k) -> int:
     if(n >= k):
