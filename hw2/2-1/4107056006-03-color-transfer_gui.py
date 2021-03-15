@@ -3,16 +3,16 @@ import tkinter
 import tkinter.filedialog
 import cv2
 import numpy as np
-import sys
 
 def main():
+    print("Please select source file, target file and destination file sequantialy!")
     window = tk.Tk()
     window.withdraw()
-    file_path = tk.filedialog.askopenfilename(title='source file',initialdir=r'.',filetypes=[('圖片','.jpg'),('圖片','.png'),('圖片','.bmp'),('All Files','*')],defaultextension='bmp',multiple=True)
+    file_path = tk.filedialog.askopenfilename(title='Source file',initialdir=r'.',filetypes=[('圖片','.jpg'),('圖片','.png'),('圖片','.bmp'),('All Files','*')],defaultextension='bmp',multiple=True)
     sourcefilename = file_path[0]
-    file_path = tk.filedialog.askopenfilename(title='target file',initialdir=r'.',filetypes=[('圖片','.jpg'),('圖片','.png'),('圖片','.bmp'),('All Files','*')],defaultextension='bmp',multiple=True)
+    file_path = tk.filedialog.askopenfilename(title='Target file',initialdir=r'.',filetypes=[('圖片','.jpg'),('圖片','.png'),('圖片','.bmp'),('All Files','*')],defaultextension='bmp',multiple=True)
     targetfilename = file_path[0]
-    file_path = tk.filedialog.asksaveasfile(title='dest file',initialdir=r'.',filetypes=[('圖片','.jpg'),('圖片','.png'),('圖片','.bmp'),('All Files','*')],defaultextension='bmp')
+    file_path = tk.filedialog.asksaveasfile(title='Destination file',initialdir=r'.',filetypes=[('圖片','.jpg'),('圖片','.png'),('圖片','.bmp'),('All Files','*')],defaultextension='bmp')
     outfilename = file_path.name
     sourcefile = cv2.imread(sourcefilename)
     targetfile = cv2.imread(targetfilename)

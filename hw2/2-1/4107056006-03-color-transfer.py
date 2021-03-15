@@ -2,16 +2,20 @@ import cv2
 import numpy as np
 import sys
 def main():
-    if len(sys.argv) < 3:
+    if len(sys.argv) < 7:
         print(f'Error: Expect more arguments.\n'
-              f'Usage: python {sys.argv[0]} source.jpg target.jpg output.jpg\n'
+              f'Usage: python {__file__} -s source.jpg -t target.jpg -o output.jpg\n'
               f'if output filename is not provided, \'output.jpg\' is default.')
         exit()
-    sourcefilename = sys.argv[1]
-    targetfilename = sys.argv[2]
-    if len(sys.argv) == 4:
-        outfilename = sys.argv[3]
-    else:
+    outfilename = ''
+    for i in range(len(sys.argv)):
+        if sys.argv[i] == '-s':
+            sourcefilename = sys.argv[i+1]
+        if sys.argv[i] == '-t':
+            targetfilename = sys.argv[i+1]
+        if sys.argv[i] == '-o':
+            outfilename = sys.argv[i+1]
+    if outfilename == '':
         outfilename = 'output.jpg'
     sourcefile = cv2.imread(sourcefilename)
     targetfile = cv2.imread(targetfilename)

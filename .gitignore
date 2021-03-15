@@ -1,4 +1,6 @@
 venv/
 *.jpg
 *.png
+*.bmp
 pic/
+assignment/
