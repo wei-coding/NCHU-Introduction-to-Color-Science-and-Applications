@@ -4,3 +4,4 @@ venv/
 *.bmp
 pic/
 assignment/
+.idea/
