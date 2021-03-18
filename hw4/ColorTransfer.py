@@ -24,6 +24,10 @@ def main():
     targetfile = cv2.imread(targetfilename)
     outputfile = color_transfer(sourcefile, targetfile)
     cv2.imwrite(outfilename, outputfile)
+    cv2.imshow('source', sourcefile)
+    cv2.imshow('target', targetfile)
+    cv2.imshow('result', outputfile)
+    cv2.waitKey(-1)
 
 
 def color_transfer(source, target, sideinfodeci='sideinfodeci.txt'):
@@ -36,7 +40,7 @@ def color_transfer(source, target, sideinfodeci='sideinfodeci.txt'):
     with open(sideinfodeci, 'w') as f:
         f.write('%.4f\n%.4f\n%.4f\n%.4f\n%.4f\n%.4f\n'
                 '%.4f\n%.4f\n%.4f\n%.4f\n%.4f\n%.4f'
-                %(source_mean_r, source_mean_g, source_mean_b,source_std_r, source_std_g,  source_std_b,
+                %(source_mean_r, source_mean_g, source_mean_b, source_std_r, source_std_g,  source_std_b,
                   target_mean_r, target_mean_g, target_mean_b, target_std_r, target_std_g, target_std_b))
     out_r = source_r.astype(dtype=np.uint8)
     out_g = source_g.astype(dtype=np.uint8)
