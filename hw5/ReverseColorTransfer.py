@@ -28,11 +28,18 @@ def reverse_color_transfer(result: np.ndarray, sideinfo) -> np.ndarray:
 
 
 def main():
-    if len(sys.argv) < 3:
-        print(f'Usage: {sys.argv[0]} resultfile sideinformfile')
+    visual = False
+    if len(sys.argv) < 5:
+        print(f'Usage: {sys.argv[0]} -r resultfile -i sideinformfile[ -o outputfile -v]\n'
+              f'use -v to enable visualize function')
         exit()
-    resultfile = sys.argv[1]
-    sideinformfile = sys.argv[2]
+    for i in range(len(sys.argv)):
+        if sys.argv[i] == '-r':
+            resultfile = sys.argv[i+1]
+        if sys.argv[i] == '-i':
+            sideinformfile = sys.argv[i+1]
+        if sys.argv[i] == '-v':
+            visual = True
     try:
         result = cv2.imread(resultfile)
         with open(sideinformfile, 'r') as sideinfo:
@@ -41,10 +48,11 @@ def main():
         print(traceback.format_exc())
         print('Error occured! Check whether input format is right!')
         exit()
-    cv2.imwrite('output.bmp', img)
-    cv2.imshow('input', result)
-    cv2.imshow('output', img)
-    cv2.waitKey(-1)
+    if visual:
+        cv2.imwrite('output.bmp', img)
+        cv2.imshow('input', result)
+        cv2.imshow('output', img)
+        cv2.waitKey(-1)
 
 
 if __name__ == '__main__':
