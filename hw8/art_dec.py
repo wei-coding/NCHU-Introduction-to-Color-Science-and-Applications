@@ -2,6 +2,7 @@ import argparse
 
 import cv2
 import numpy as np
+import threading
 
 
 def arnold_transfer(inputfile, outputfile, times, forward) -> int:
@@ -29,6 +30,23 @@ def arnold_transfer(inputfile, outputfile, times, forward) -> int:
     return cycle
 
 
+def save_data(file_setting, args):
+    switch = {
+        '+': True,
+        '-': False,
+    }
+    print(f'processing {file_setting[0]} ...')
+    output_filename = file_setting[0].split('_', maxsplit=1)[1]
+    cycle_time = arnold_transfer(
+        file_setting[0],
+        output_filename,
+        int(file_setting[3]) - int(file_setting[2]) * (1 if switch[file_setting[1]] else -1),
+        True
+    )
+    with open(args.output, 'a') as fo:
+        fo.writelines(output_filename + '\n')
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--input', '-i', type=str, required=True)
@@ -44,24 +62,16 @@ def main():
         ART-45_Cars-1024.bmp - 45 768
         '''
         lines = f.readlines()
+        th = []
         for line in lines:
             if line.strip() == '':
                 break
             file_setting = line.strip().split(' ')
-            switch = {
-                '+': True,
-                '-': False,
-            }
-            print(f'processing {file_setting[0]} ...')
-            output_filename = file_setting[0].split('_', maxsplit=1)[1]
-            cycle_time = arnold_transfer(
-                file_setting[0],
-                output_filename,
-                int(file_setting[3]) - int(file_setting[2]) * (1 if switch[file_setting[1]] else -1),
-                True
-            )
-            with open(args.output, 'a') as fo:
-                fo.writelines(output_filename+'\n')
+            th.append(threading.Thread(target=save_data, args=(file_setting, args)))
+        for t in th:
+            t.start()
+        for t in th:
+            t.join()
 
 
 if __name__ == '__main__':

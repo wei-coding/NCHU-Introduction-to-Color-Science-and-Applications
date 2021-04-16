@@ -35,6 +35,7 @@ def save_data(file_setting, args):
         '+': True,
         '-': False,
     }
+    print(f'processing {file_setting[0]} ...')
     cycle_time = arnold_transfer(
         file_setting[0],
         f'ART{file_setting[1]}{file_setting[2]}_{file_setting[0]}',
@@ -62,6 +63,7 @@ def main():
         Cars-1024.bmp - 45
         '''
         lines = f.readlines()
+        th = []
         for line in lines:
             if line.strip() == '':
                 break
@@ -70,16 +72,11 @@ def main():
                 '+': True,
                 '-': False,
             }
-            print(f'processing {file_setting[0]} ...')
-            cycle_time = arnold_transfer(
-                file_setting[0],
-                f'ART{file_setting[1]}{file_setting[2]}_{file_setting[0]}',
-                int(file_setting[2]),
-                switch[file_setting[1]]
-            )
-            with open(args.output, 'a') as fo:
-                fo.writelines(f'ART{file_setting[1]}{file_setting[2]}_{file_setting[0]}'
-                              f' {file_setting[1]} {file_setting[2]} {cycle_time}\n')
+            th.append(threading.Thread(target=save_data, args=(file_setting, args)))
+        for t in th:
+            t.start()
+        for t in th:
+            t.join()
 
 
 if __name__ == '__main__':
