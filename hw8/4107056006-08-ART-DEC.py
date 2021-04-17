@@ -11,22 +11,19 @@ def arnold_transfer(inputfile, outputfile, times, forward) -> int:
     new_img = np.copy(img)
     x, y = np.meshgrid(range(N), range(N))
     cycle = 0
-    xx = (x + y) % N
-    yy = (x + 2 * y) % N
-    while True:
-        new_img = new_img[yy, xx]
-        cycle += 1
-        if not (new_img - img).any():
-            break
     if forward:
         xx = (x + y) % N
         yy = (x + 2 * y) % N
     else:
         xx = (2 * x - y) % N
         yy = (-1 * x + y) % N
-    for _ in range(times):
-        img = img[yy, xx]
-    cv2.imwrite(outputfile, img)
+    while True:
+        new_img = new_img[yy, xx]
+        cycle += 1
+        if cycle == times:
+            cv2.imwrite(outputfile, new_img)
+        if not (new_img - img).any():
+            break
     return cycle
 
 
@@ -45,6 +42,7 @@ def save_data(file_setting, args):
     )
     with open(args.output, 'a') as fo:
         fo.writelines(output_filename + '\n')
+    print(f'{file_setting[0]} finished')
 
 
 def main():
@@ -52,6 +50,7 @@ def main():
     parser.add_argument('--input', '-i', type=str, required=True)
     parser.add_argument('--output', '-o', type=str, required=True)
     args = parser.parse_args()
+    open(args.output, 'w')
     with open(args.input, 'r') as f:
         '''
         txt looks like this:
