@@ -11,8 +11,8 @@ def arnold_transfer(inputfile, outputfile, times, forward) -> int:
     new_img = np.copy(img)
     x, y = np.meshgrid(range(N), range(N))
     cycle = 0
-    xx = (2 * x - y) % N
-    yy = (-1 * x + y) % N
+    xx = (x + y) % N
+    yy = (x + 2 * y) % N
     while True:
         new_img = new_img[yy, xx]
         cycle += 1
@@ -36,31 +36,30 @@ def save_data(file_setting, args):
         '-': False,
     }
     print(f'processing {file_setting[0]} ...')
+    output_filename = file_setting[0].split('_', maxsplit=1)[1]
     cycle_time = arnold_transfer(
         file_setting[0],
-        f'ART{file_setting[1]}{file_setting[2]}_{file_setting[0]}',
-        int(file_setting[2]),
-        switch[file_setting[1]]
+        output_filename,
+        int(file_setting[3]) - int(file_setting[2]) * (1 if switch[file_setting[1]] else -1),
+        True
     )
     with open(args.output, 'a') as fo:
-        fo.writelines(f'ART{file_setting[1]}{file_setting[2]}_{file_setting[0]}'
-                      f' {file_setting[1]} {file_setting[2]} {cycle_time}\n')
+        fo.writelines(output_filename + '\n')
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input', '-i', help='input filename with extension', type=str, required=True)
-    parser.add_argument('--output', '-o', help='output filename with extension', type=str, required=True)
+    parser.add_argument('--input', '-i', type=str, required=True)
+    parser.add_argument('--output', '-o', type=str, required=True)
     args = parser.parse_args()
-    open(args.output, 'w')
     with open(args.input, 'r') as f:
         '''
         txt looks like this:
-        Alschari-1000.bmp + 20
-        Anturium-512.bmp + 187
-        BeaverDam-800.bmp - 27
-        Blackcat-1280.jpg + 741
-        Cars-1024.bmp - 45
+        ART+20_Alschari-1000.bmp + 20 750
+        ART+187_Anturium-512.bmp + 187 384
+        ART-27_BeaverDam-800.bmp - 27 600
+        ART+741_Blackcat-1280.jpg + 741 960
+        ART-45_Cars-1024.bmp - 45 768
         '''
         lines = f.readlines()
         th = []
@@ -68,10 +67,6 @@ def main():
             if line.strip() == '':
                 break
             file_setting = line.strip().split(' ')
-            switch = {
-                '+': True,
-                '-': False,
-            }
             th.append(threading.Thread(target=save_data, args=(file_setting, args)))
         for t in th:
             t.start()
