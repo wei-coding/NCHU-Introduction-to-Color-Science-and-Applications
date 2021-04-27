@@ -18,7 +18,7 @@ def arnold_transfer(inputfile, outputfile, times, forward) -> int:
         xx = (2 * x - y) % N
         yy = (-1 * x + y) % N
     while True:
-        new_img = new_img[xx, yy]
+        new_img = new_img[yy, xx]
         cycle += 1
         if cycle == times:
             cv2.imwrite(outputfile, new_img)
