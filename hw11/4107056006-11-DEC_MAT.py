@@ -46,14 +46,14 @@ def calc(path, filename):
 
 def var(img):
     stat = get_stat(img)
-    size = 256 ** 2
+    size = 256
     tot = 0
-    for s in stat:
-        tot += s ** 2
+    for i in stat:
+        tot += i ** 2
     tot /= size
     mean = 0
-    for s in stat:
-        mean += s
+    for i in stat:
+        mean += i
     mean /= size
     _var = tot - mean ** 2
     return round(_var, 2)
@@ -65,10 +65,9 @@ def entropy(img):
     # print(size)
     tot = 0
     for i in range(256):
-        if stat[i] == 0:
-            tot += 0
-        else:
-            tot += (stat[i] / size) * math.log2(stat[i] / size)
+        if stat[i] != 0:
+            prob = stat[i] / size
+            tot += prob * math.log2(prob)
     tot = -tot
     return round(tot, 6)
 
